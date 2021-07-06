@@ -14,7 +14,7 @@
   "devDependencies": {
     "@babel/core": "^7.13.16",
     "@babel/preset-env": "^7.13.15",
-    "@editorjs/editorjs": "../editor.js-copy",
+    "@editorjs/editorjs": "https://github.com/codex-team/editor.js#feature/tunes-improvements",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
     "eslint": "^7.24.0",

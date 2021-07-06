@@ -1,21 +1,52 @@
 .ej-fn-popup {
     position: absolute;
-    z-index: 10;
+    z-index: 1;
+    margin-top: 10px;
 
-    width: 500px;
-    height: 245px;
+    width: 300px;
+    min-height: 145px;
+    max-height: 400px;
+    overflow-y: auto;
     padding: 17px 40px 20px 20px;
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: 0 3px 15px -3px rgba(13, 20, 33, 0.13);
-    border: solid 1px #eaeaea;
+    border: 1px solid #EAEAEA;
     background-color: #ffffff;
 
     outline: none;
 
+
     display: none;
+
+    font-size: 15px;
+    letter-spacing: -0.04px;
+    line-height: 26px;
+    will-change: opacity, transform;
+
+    &:empty::before {
+        content: attr(data-placeholder);
+        color: #707684;
+    }
 }
 
 .ej-fn-popup--opened {
     display: block;
+    animation: fn-popover-in 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
+
+@keyframes fn-popover-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}

@@ -1,33 +1,46 @@
 import { make } from './dom';
 import styles from './popup.pcss';
 import Note from './note';
+import { API } from "@editorjs/editorjs";
 
 /**
  *
  */
 export default class Popup {
-    /**
-     * Popup node
-     */
-    public node: HTMLElement;
+  /**
+   * Popup node
+   */
+  public node: HTMLElement;
 
-    /**
-     * Current note to edit
-     */
-    private currentNote: Note | null = null;
+  /**
+   * Current note to edit
+   */
+  private currentNote: Note | null = null;
 
-    /**
-     * Tune's wrapper
-     */
-    private wrapper: HTMLElement;
+  /**
+   * Tune's wrapper
+   */
+  private wrapper: HTMLElement;
+
+  /**
+   * Editor.js API
+   */
+  private readonly api: API;
 
     /**
      * @param wrapper - Tune's wrapper
      * @param readOnly - flag shows if Editor is in read-only mode
+     * @param api - Editor.js API
      */
-    constructor(wrapper: HTMLElement, readOnly: boolean) {
-      this.node = make('div', styles['ej-fn-popup'], { contentEditable: readOnly ? 'false' : 'true' });
+    constructor(wrapper: HTMLElement, readOnly: boolean, api: API) {
+      this.api = api;
+      this.node = make('div', styles['ej-fn-popup'], {
+        contentEditable: readOnly ? 'false' : 'true',
+      });
       this.wrapper = wrapper;
+
+      this.node.dataset.inlineToolbar = 'true';
+      this.node.dataset.placeholder = this.api.i18n.t('Write a footnote');
 
       /**
        * If enter pressed, close the popup
@@ -96,7 +109,10 @@ export default class Popup {
      * @param e
      */
     private onClickOutside(e: MouseEvent): void {
-      if (e.target === this.node) {
+      const isClickedInside = (e.target as HTMLElement).closest(`.${styles['ej-fn-popup']}`) !== null;
+      const isClickedOnInlineToolbar = (e.target as HTMLElement).closest(`.ce-inline-toolbar`) !== null;
+
+      if (isClickedInside || isClickedOnInlineToolbar) {
         return;
       }
 

@@ -4,6 +4,17 @@ import { API, BlockTune } from '@editorjs/editorjs';
 import { make } from './dom';
 import Popup from './popup';
 import Note from './note';
+import IconAddFootnote from './assets/add-footnote.svg';
+
+/**
+ * @todo - rename "popup" to "popover"
+ * @todo - add "Remove note" button to the Popover
+ * @todo - hide popover on second click to the Note
+ * @todo - On popover opening, place caret to the end of the text
+ * @todo - Move popover on window resize
+ * @todo - Add external 'config' with 'placeholder'
+ * @todo - Find <sup>'s by data-attribute or classname, not only a tagname
+ */
 
 /**
  * Type of Footnotes Tune data
@@ -51,6 +62,12 @@ export default class FootnotesTune implements BlockTune {
    */
   private readonly data: string[] = [];
 
+
+  /**
+   * Editor.js API
+   */
+  private readonly api: API;
+
   /**
    * @class
    *
@@ -59,8 +76,9 @@ export default class FootnotesTune implements BlockTune {
    */
   constructor({ data, api }: { data: FootnotesData, api: API }) {
     this.data = data;
+    this.api = api;
 
-    this.popup = new Popup(this.wrapper, api.readOnly.isEnabled);
+    this.popup = new Popup(this.wrapper, api.readOnly.isEnabled, api);
   }
 
   /**
@@ -69,15 +87,22 @@ export default class FootnotesTune implements BlockTune {
    * @param range - current selected range
    */
   public render(range: Range): HTMLElement {
-    const button = make('div');
+    const tuneWrapper = make('div', styles['ej-fn-tune']);
+    const icon = make('div', styles['ej-fn-tune__icon'], {
+      innerHTML: IconAddFootnote
+    });
+    const label = make('div', styles['ej-fn-tune__label'], {
+      innerText: this.api.i18n.t('Footnote')
+    });
 
-    button.innerText = 'FN';
+    tuneWrapper.appendChild(icon);
+    tuneWrapper.appendChild(label);
 
-    button.addEventListener('click', () => {
+    tuneWrapper.addEventListener('click', () => {
       this.onClick(range);
     });
 
-    return button;
+    return tuneWrapper;
   }
 
   /**
@@ -116,6 +141,9 @@ export default class FootnotesTune implements BlockTune {
     const note = new Note(range, this.popup);
 
     this.insertNote(note);
+    this.popup.open(note);
+
+    this.api.toolbar.toggleBlockSettings(false);
   }
 
   /**
