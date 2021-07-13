@@ -5,6 +5,7 @@ import { make } from './dom';
 import Popup from './popup';
 import Note from './note';
 import IconAddFootnote from './assets/add-footnote.svg';
+import Shortcut from '@codexteam/shortcuts';
 
 /**
  * @todo - rename "popup" to "popover"
@@ -69,6 +70,11 @@ export default class FootnotesTune implements BlockTune {
   private readonly api: API;
 
   /**
+   * Shortcut instance
+   */
+  private shortcut: any;
+
+  /**
    * @class
    *
    * @param data - data passed on render
@@ -89,18 +95,22 @@ export default class FootnotesTune implements BlockTune {
   public render(range: Range): HTMLElement {
     const tuneWrapper = make('div', styles['ej-fn-tune']);
     const icon = make('div', styles['ej-fn-tune__icon'], {
-      innerHTML: IconAddFootnote
+      innerHTML: IconAddFootnote,
     });
     const label = make('div', styles['ej-fn-tune__label'], {
-      innerText: this.api.i18n.t('Footnote')
+      innerText: this.api.i18n.t('Footnote'),
     });
 
     tuneWrapper.appendChild(icon);
     tuneWrapper.appendChild(label);
 
-    tuneWrapper.addEventListener('click', () => {
-      this.onClick(range);
-    });
+    if (!range || !this.wrapper.contains(range.startContainer)) {
+      tuneWrapper.classList.add(styles['ej-fn-tune--disabled']);
+    } else {
+      tuneWrapper.addEventListener('click', () => {
+        this.onClick(range);
+      });
+    }
 
     return tuneWrapper;
   }
@@ -127,7 +137,34 @@ export default class FootnotesTune implements BlockTune {
       subtree: true,
     });
 
+    this.shortcut = new Shortcut({
+      on: this.wrapper,
+      name: 'CMD+SHIFT+F',
+      callback: (): void => {
+        const selection = window.getSelection();
+
+        if (!selection) {
+          return;
+        }
+
+        const range = selection.getRangeAt(0);
+
+        if (!range) {
+          return;
+        }
+
+        this.onClick(range);
+      },
+    });
+
     return this.wrapper;
+  }
+
+  /**
+   * Tune destory method to clean up
+   */
+  public destroy(): void {
+    this.shortcut?.remove();
   }
 
   /**

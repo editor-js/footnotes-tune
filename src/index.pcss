@@ -7,8 +7,9 @@
     cursor: pointer;
     transition: background-color 100ms ease;
     will-change: background-color;
+    user-select: none;
 
-    &:hover {
+    &:hover:not(&--disabled) {
         background: #eff2f5;
     }
 
@@ -29,6 +30,11 @@
     &__label {
         font-size: 14px;
         line-height: 22px;
+    }
+
+    &--disabled {
+        opacity: 0.7;
+        cursor: default;
     }
 }
 
