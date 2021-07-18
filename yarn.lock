@@ -829,7 +829,15 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.3.tgz#90420f9f9c6d3987f176a19a7d8e764271a2f55d"
 
 "@editorjs/editorjs@../editor.js-copy":
-  version "2.22.0"
+  version "2.22.1"
+  dependencies:
+    codex-notifier "^1.1.2"
+    codex-tooltip "^1.0.2"
+    nanoid "^3.1.22"
+
+"@editorjs/editorjs@https://github.com/codex-team/editor.js#feature/tunes-improvements":
+  version "2.22.1"
+  resolved "https://github.com/codex-team/editor.js#6afde7ed3f9d510f2df94d3a96302ab3fd199d12"
   dependencies:
     codex-notifier "^1.1.2"
     codex-tooltip "^1.0.2"

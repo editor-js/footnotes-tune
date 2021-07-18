@@ -15,7 +15,7 @@
     "@babel/core": "^7.13.16",
     "@babel/preset-env": "^7.13.15",
     "@cypress/webpack-preprocessor": "^5.9.1",
-    "@editorjs/editorjs": "../editor.js-copy",
+    "@editorjs/editorjs": "https://github.com/codex-team/editor.js#feature/tunes-improvements",
     "@types/node": "^16.3.3",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
