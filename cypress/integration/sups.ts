@@ -31,6 +31,34 @@ describe('Sup element', () => {
       .should('contain', '1');
   });
 
+  it('should be removed by backspace', () => {
+    cy.getEditor({ block: 0 })
+      .find('.cdx-block[contenteditable]')
+      .type('Some text{command}{shift}F')
+      .click()
+      .find('sup');
+
+    cy.getEditor({ block: 0 })
+      .find('.cdx-block[contenteditable]')
+      .type('{movetoend}{backspace}')
+      .find('sup')
+      .should('not.exist');
+  });
+
+  it('should be removed by delete key', () => {
+    cy.getEditor({ block: 0 })
+      .find('.cdx-block[contenteditable]')
+      .type('Some text{command}{shift}F')
+      .click()
+      .find('sup');
+
+    cy.getEditor({ block: 0 })
+      .find('.cdx-block[contenteditable]')
+      .type('{movetoend}{leftarrow}{del}')
+      .find('sup')
+      .should('not.exist');
+  });
+
   describe('tune should correctly assign numbers to sups', () => {
     it('should assign lower number if new note goes before existing one', () => {
       cy.getEditor({ block: 0 })

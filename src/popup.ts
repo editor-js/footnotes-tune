@@ -28,16 +28,22 @@ export default class Popup {
   private readonly api: API;
 
   /**
+   * ReadOnly state
+   *
+   * @private
+   */
+  private readOnly: boolean;
+
+  /**
    * @param wrapper - Tune's wrapper
    * @param readOnly - flag shows if Editor is in read-only mode
    * @param api - Editor.js API
    */
   constructor(wrapper: HTMLElement, readOnly: boolean, api: API) {
     this.api = api;
-    this.node = make('div', styles['ej-fn-popup'], {
-      contentEditable: readOnly ? 'false' : 'true',
-    });
+    this.node = make('div', styles['ej-fn-popup']);
     this.wrapper = wrapper;
+    this.readOnly = readOnly;
 
     this.node.dataset.inlineToolbar = 'true';
     this.node.dataset.placeholder = this.api.i18n.t('Write a footnote');
@@ -46,8 +52,9 @@ export default class Popup {
      * If enter pressed, insert linebreak
      */
     this.node.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+
       if (e.key === 'Enter' && !e.shiftKey) {
-        e.stopPropagation();
         e.preventDefault();
 
         const selection = window.getSelection();
@@ -69,13 +76,25 @@ export default class Popup {
   public open(note: Note): void {
     this.currentNote = note;
     this.node.innerHTML = note.content;
+    this.node.contentEditable = this.readOnly ? 'false' : 'true';
 
     document.addEventListener('click', this.onClickOutside, true);
 
     this.move(note);
 
     this.node.classList.add(styles['ej-fn-popup--opened']);
-    this.node.focus();
+
+    /**
+     * Set cursor to the end of text
+     */
+    const selection = window.getSelection();
+    const range = new Range();
+
+    range.selectNodeContents(this.node);
+    range.collapse();
+
+    selection!.removeAllRanges();
+    selection!.addRange(range);
   }
 
   /**
@@ -88,6 +107,7 @@ export default class Popup {
     }
 
     this.node.classList.remove(styles['ej-fn-popup--opened']);
+    this.node.contentEditable = 'false';
   }
 
   /**
