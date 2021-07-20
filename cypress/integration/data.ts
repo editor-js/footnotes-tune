@@ -1,4 +1,4 @@
-import popupStyles from '../../src/popup.pcss';
+import popoverStyles from '../../src/popover.pcss';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 
 describe('Data manipulations', () => {
@@ -14,12 +14,12 @@ describe('Data manipulations', () => {
         .type('Some text{command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the popup{selectall}');
+        .type('This text is inside the popover{selectall}');
 
       cy.getEditor()
         .click();
@@ -30,7 +30,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.data.text).to.eq('Some text<sup>1</sup>');
+          expect(paragraph.data.text).to.eq('Some text<sup data-tune="footnote">1</sup>');
         });
     });
 
@@ -41,15 +41,13 @@ describe('Data manipulations', () => {
         .type('Some text{command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the popup{selectall}');
+        .type('This text is inside the popover{cmd}{enter}');
 
-      cy.getEditor()
-        .click();
 
       cy.get<EditorJS>('@EditorJS')
         .then(async (editor) => {
@@ -59,7 +57,7 @@ describe('Data manipulations', () => {
 
           expect(paragraph).to.have.property('tunes');
           expect(paragraph.tunes).to.have.property('footnote');
-          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popup' ]);
+          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popover' ]);
         });
     });
 
@@ -70,12 +68,12 @@ describe('Data manipulations', () => {
         .type('Some {command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the first popup{selectall}');
+        .type('This text is inside the first popover{selectall}');
 
       cy.getEditor({ block: 0 })
         .find('.cdx-block[contenteditable]')
@@ -83,15 +81,12 @@ describe('Data manipulations', () => {
         .type('{movetoend} text{command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the second popup{selectall}');
-
-      cy.getEditor()
-        .click();
+        .type('This text is inside the second popover{cmd}{enter}');
 
       cy.get<EditorJS>('@EditorJS')
         .then(async (editor) => {
@@ -99,7 +94,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq(['This text is inside the first popup', 'This text is inside the second popup']);
+          expect(paragraph.tunes!.footnote).to.deep.eq(['This text is inside the first popover', 'This text is inside the second popover']);
         });
     });
 
@@ -110,12 +105,12 @@ describe('Data manipulations', () => {
         .type('Some text{command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the popup{selectall}');
+        .type('This text is inside the popover{selectall}');
 
       cy.getEditor()
         .find('.ce-inline-toolbar')
@@ -124,7 +119,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor()
-        .click();
+        .click('topLeft');
 
       cy.get<EditorJS>('@EditorJS')
         .then(async (editor) => {
@@ -132,7 +127,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq([ '<b>This text is inside the popup</b>' ]);
+          expect(paragraph.tunes!.footnote).to.deep.eq([ '<b>This text is inside the popover</b>' ]);
         });
     });
 
@@ -143,15 +138,13 @@ describe('Data manipulations', () => {
         .type('Some text{command}{shift}F');
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         /**
-         * For some reason cypress inserts F from shortcut to a popup
+         * For some reason cypress inserts F from shortcut to a popover
          */
         .type('{selectall}{backspace}')
-        .type('This text is inside the popup{enter}');
+        .type('This text is inside the popover{enter}{cmd}{enter}');
 
-      cy.getEditor()
-        .click();
 
       cy.get<EditorJS>('@EditorJS')
         .then(async (editor) => {
@@ -159,7 +152,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popup<br>' ]);
+          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popover<br><br>' ]);
         });
     });
   });
@@ -178,7 +171,7 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup>1</sup>',
+            text: 'Some text<sup data-tune="footnote">1</sup>',
           },
           tunes: {
             footnote: [
@@ -194,7 +187,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         .should('be.visible')
         .should('contain', 'This is a footnote');
     });
@@ -204,7 +197,7 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some<sup>1</sup> text<sup>2</sup>',
+            text: 'Some<sup data-tune="footnote">1</sup> text<sup data-tune="footnote">2</sup>',
           },
           tunes: {
             footnote: [
@@ -222,7 +215,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         .should('be.visible')
         .should('contain', 'This is the first footnote');
 
@@ -233,7 +226,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         .should('be.visible')
         .should('contain', 'This is the second footnote');
     });
@@ -243,7 +236,7 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup>1</sup>',
+            text: 'Some text<sup data-tune="footnote">1</sup>',
           },
           tunes: {
             footnote: [
@@ -259,7 +252,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         .should('be.visible')
         .should('contain.html', 'This is a <b>footnote</b>');
     });
@@ -269,7 +262,7 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup>1</sup>',
+            text: 'Some text<sup data-tune="footnote">1</sup>',
           },
           tunes: {
             footnote: [
@@ -285,7 +278,7 @@ describe('Data manipulations', () => {
         .click();
 
       cy.getEditor({ block: 0 })
-        .find(`.${popupStyles['ej-fn-popup']}`)
+        .find(`.${popoverStyles['ej-fn-popover']}`)
         .should('be.visible')
         .should('contain.html', 'This is a footnote<br>');
     });

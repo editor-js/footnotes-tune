@@ -1,74 +1,88 @@
-import { make } from './dom';
+import {make} from './dom';
 import styles from './note.pcss';
-import Popup from './popup';
+import Popover from './popover';
 
 /**
  * Note object
  */
 export default class Note {
-    /**
-     * Note's content
-     */
-    public content = '';
 
-    /**
-     * Range which contain sup element
-     */
-    public range: Range;
+  /**
+   * data-tune value
+   */
+  public static dataAttribute = 'footnote';
 
-    /**
-     * Sup element
-     */
-    public node: HTMLElement = make('sup', styles['ej-fn-sup'], { contentEditable: 'false' });
+  /**
+   * Note's content
+   */
+  public content = '';
 
-    /**
-     * Note's index
-     */
-    private _index = 0;
+  /**
+   * Range which contain sup element
+   */
+  public range: Range;
 
-    /**
-     * Editable popup
-     */
-    private popup: Popup;
+  /**
+   * Sup element
+   */
+  public node: HTMLElement = make('sup', styles['ej-fn-sup'], {contentEditable: 'false'});
 
-    /**
-     * @param rangeOrNode - range to insert sup or existing sup to hydrate
-     * @param popup - editable popup
-     */
-    constructor(rangeOrNode: Range | HTMLElement, popup: Popup) {
-      this.popup = popup;
+  /**
+   * Note's index
+   */
+  private _index = 0;
 
-      if (rangeOrNode instanceof Range) {
-        this.range = rangeOrNode;
-        rangeOrNode.insertNode(this.node);
-      } else {
-        this.node = rangeOrNode;
-        this.node.contentEditable = 'false';
-        this.node.classList.add(styles['ej-fn-sup']);
+  /**
+   * Editable popover
+   */
+  private popover: Popover;
 
-        this.range = new Range();
+  /**
+   * @param rangeOrNode - range to insert sup or existing sup to hydrate
+   * @param popover - editable popover
+   */
+  constructor(rangeOrNode: Range | HTMLElement, popover: Popover) {
+    this.popover = popover;
 
-        this.range.selectNode(this.node);
-      }
+    if (rangeOrNode instanceof Range) {
+      this.range = rangeOrNode;
+      rangeOrNode.insertNode(this.node);
+    } else {
+      this.node = rangeOrNode;
+      this.node.contentEditable = 'false';
+      this.node.classList.add(styles['ej-fn-sup']);
 
-      this.node.addEventListener('click', () => {
-        this.popup.open(this);
-      });
+      this.range = new Range();
+
+      this.range.selectNode(this.node);
     }
 
-    /**
-     * Returns note's index
-     */
-    public get index(): number {
-      return this._index;
-    }
+    this.node.dataset.tune = Note.dataAttribute;
+    this.node.addEventListener('click', () => {
+      this.popover.open(this);
+    });
+  }
 
-    /**
-     * Updates note's index
-     */
-    public set index(index: number) {
-      this._index = index;
+  /**
+   * Returns note's index
+   */
+  public get index(): number {
+    return this._index;
+  }
 
-      this.node.textContent = this._index.toString();
-    }
+  /**
+   * Updates note's index
+   */
+  public set index(index: number) {
+    this._index = index;
+
+    this.node.textContent = this._index.toString();
+  }
+
+  /**
+   * Removes sup element from DOM
+   */
+  public remove(): void {
+    this.node.remove();
+  }
 }

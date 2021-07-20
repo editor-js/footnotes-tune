@@ -2,25 +2,23 @@ import styles from  './index.pcss';
 
 import { API, BlockTune } from '@editorjs/editorjs';
 import { make } from './dom';
-import Popup from './popup';
+import Popover from './popover';
 import Note from './note';
 import IconAddFootnote from './assets/add-footnote.svg';
 import Shortcut from '@codexteam/shortcuts';
 
 /**
- * @todo - rename "popup" to "popover"
- * @todo - add "Remove note" button to the Popover
- * @todo - hide popover on second click to the Note
- * @todo - On popover opening, place caret to the end of the text
- * @todo - Move popover on window resize
- * @todo - Add external 'config' with 'placeholder'
- * @todo - Find <sup>'s by data-attribute or classname, not only a tagname
- */
-
-/**
  * Type of Footnotes Tune data
  */
 export type FootnotesData = string[];
+
+/**
+ * Tune user config
+ */
+export interface FootnotesTuneConfig {
+  placeholder?: string;
+  shortcut?: string;
+}
 
 /**
  * FootnotesTune for Editor.js
@@ -35,7 +33,9 @@ export default class FootnotesTune implements BlockTune {
    * Sanitize config for Tune
    */
   public static sanitize = {
-    sup: {},
+    sup: {
+      'data-tune': Note.dataAttribute,
+    },
   };
 
   /**
@@ -44,9 +44,9 @@ export default class FootnotesTune implements BlockTune {
   private wrapper = make('div', styles['ej-fn-wrapper']);
 
   /**
-   * Editable popup for notes
+   * Editable popover for notes
    */
-  private popup: Popup;
+  private popover: Popover;
 
   /**
    * Notes for Tool
@@ -75,24 +75,34 @@ export default class FootnotesTune implements BlockTune {
   private shortcut: any;
 
   /**
+   * Tune's config
+   *
+   * @private
+   */
+  private config: FootnotesTuneConfig;
+
+  /**
    * @class
    *
    * @param data - data passed on render
    * @param api - Editor.js API
+   * @param config - Tune's config
    */
-  constructor({ data, api }: { data: FootnotesData, api: API }) {
+  constructor({ data, api, config = {} }: { data: FootnotesData, api: API, config?: FootnotesTuneConfig }) {
     this.data = data;
     this.api = api;
+    this.config = config;
 
-    this.popup = new Popup(this.wrapper, api.readOnly.isEnabled, api);
+    this.popover = new Popover(this.wrapper, api, this.config);
   }
 
   /**
    * Render Tune icon
-   *
-   * @param range - current selected range
    */
-  public render(range: Range): HTMLElement {
+  public render(): HTMLElement {
+    const selection = window.getSelection()!;
+    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
     const tuneWrapper = make('div', styles['ej-fn-tune']);
     const icon = make('div', styles['ej-fn-tune__icon'], {
       innerHTML: IconAddFootnote,
@@ -128,7 +138,7 @@ export default class FootnotesTune implements BlockTune {
    * @param pluginsContent - Tool's content
    */
   public wrap(pluginsContent: HTMLElement): HTMLElement {
-    this.wrapper.append(pluginsContent, this.popup.node);
+    this.wrapper.append(pluginsContent, this.popover.node);
 
     this.hydrate(pluginsContent);
 
@@ -139,7 +149,7 @@ export default class FootnotesTune implements BlockTune {
 
     this.shortcut = new Shortcut({
       on: this.wrapper,
-      name: 'CMD+SHIFT+F',
+      name: this.config.shortcut || 'CMD+SHIFT+F',
       callback: (): void => {
         const selection = window.getSelection();
 
@@ -175,10 +185,10 @@ export default class FootnotesTune implements BlockTune {
   private onClick(range: Range): void {
     range.collapse(false);
 
-    const note = new Note(range, this.popup);
+    const note = new Note(range, this.popover);
 
     this.insertNote(note);
-    this.popup.open(note);
+    this.popover.open(note);
 
     this.api.toolbar.toggleBlockSettings(false);
   }
@@ -244,10 +254,10 @@ export default class FootnotesTune implements BlockTune {
    * @param content - Tool's content
    */
   private hydrate(content: HTMLElement): void {
-    const sups = content.querySelectorAll('sup');
+    const sups = content.querySelectorAll(`sup[data-tune=${Note.dataAttribute}]`);
 
     sups.forEach((sup, i) => {
-      const note = new Note(sup, this.popup);
+      const note = new Note(sup as HTMLElement, this.popover);
 
       note.content = this.data[i];
       this.notes.push(note);

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Footnotes Block Tune for Editor.js",
   "main": "dist/bundle.js",
+  "types": "src/index.ts",
   "repository": "https://github.com/editor-js/footnotes",
   "author": "CodeX Team <team@codex.so>",
   "license": "MIT",
