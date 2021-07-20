@@ -13,8 +13,11 @@
 // the project's config changing)
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+const codeCoverage = require('@cypress/code-coverage/task');
 
-module.exports = (on: Cypress.PluginEvents) => {
+module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfig) => {
+  codeCoverage(on, config);
+
   const options = {
     // send in the options from your webpack.config.js, so it works the same
     // as your app's code
@@ -22,5 +25,11 @@ module.exports = (on: Cypress.PluginEvents) => {
     watchOptions: {},
   };
 
+  // add other tasks to be registered here
+
+  // IMPORTANT to return the config object
+  // with the any changed environment variables
   on('file:preprocessor', webpackPreprocessor(options));
+
+  return config;
 };

@@ -13,7 +13,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-import EditorJS, {EditorConfig} from '@editorjs/editorjs';
+import '@cypress/code-coverage/support';
+import EditorJS, { EditorConfig } from '@editorjs/editorjs';
 import 'cypress-plugin-tab';
 
 declare global {

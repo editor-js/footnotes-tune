@@ -62,7 +62,13 @@ describe('popover element', () => {
     cy.getEditor({ block: 0 })
       .find('.cdx-block[contenteditable]')
       .click()
-      .type('Some text{command}{shift}F')
+      .type('Some text{command}{shift}F');
+
+    cy.getEditor({ block: 0 })
+      .find(`.${styles['ej-fn-popover']}`)
+      .should('be.visible');
+
+    cy.getEditor({ block: 0 })
       .find('sup')
       .click();
 

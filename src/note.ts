@@ -1,4 +1,4 @@
-import {make} from './dom';
+import { make } from './dom';
 import styles from './note.pcss';
 import Popover from './popover';
 
@@ -6,7 +6,6 @@ import Popover from './popover';
  * Note object
  */
 export default class Note {
-
   /**
    * data-tune value
    */
@@ -25,7 +24,7 @@ export default class Note {
   /**
    * Sup element
    */
-  public node: HTMLElement = make('sup', styles['ej-fn-sup'], {contentEditable: 'false'});
+  public node: HTMLElement = make('sup', styles['ej-fn-sup'], { contentEditable: 'false' });
 
   /**
    * Note's index

@@ -55,7 +55,7 @@ export default class Popover {
   /**
    * @param wrapper - Tune's wrapper
    * @param api - Editor.js API
-   * @param config
+   * @param config - Tune's config
    */
   constructor(wrapper: HTMLElement, api: API, config: FootnotesTuneConfig) {
     this.api = api;
@@ -90,6 +90,7 @@ export default class Popover {
   public open(note: Note): void {
     if (this.lastNote === note) {
       this.close();
+      this.lastNote = null;
 
       return;
     }
@@ -138,7 +139,10 @@ export default class Popover {
       this.currentNote.remove();
     }
 
-    this.currentNote.content = this.textarea.innerHTML;
+    if (!this.readOnly) {
+      this.currentNote.content = this.textarea.innerHTML;
+    }
+
     this.currentNote = null;
   }
 
@@ -150,6 +154,12 @@ export default class Popover {
   private makeUI(): void {
     this.textarea.dataset.inlineToolbar = 'true';
     this.textarea.dataset.placeholder = this.api.i18n.t(this.config.placeholder || 'Write a footnote');
+
+    this.node.append(this.textarea);
+
+    if (this.readOnly) {
+      return;
+    }
 
     const buttonsWrapper = make('div', styles['ej-fn-popover__buttons']);
     const applyButton = make<HTMLButtonElement>('button', styles['ej-fn-popover__button'], {
@@ -173,13 +183,11 @@ export default class Popover {
 
     buttonsWrapper.append(applyButton, shortcutHint, removeButton);
 
-    this.node.append(this.textarea, buttonsWrapper);
+    this.node.append(buttonsWrapper);
   }
 
   /**
    * Move popover to passed note
-   *
-   * @param note - current editable note
    */
   private move(): void {
     if (!this.currentNote) {
@@ -192,9 +200,9 @@ export default class Popover {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     const leftMargin = defaultWidth / 2; // half of default width
 
-    const blockContent = this.wrapper.querySelector('.ce-block__content');
+    const blockContent = this.wrapper.querySelector('.ce-block__content')!;
 
-    const contentRect = blockContent!.getBoundingClientRect();
+    const contentRect = blockContent.getBoundingClientRect();
     const wrapperRect = this.wrapper.getBoundingClientRect();
     const rect = node.getBoundingClientRect();
 

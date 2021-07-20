@@ -46,7 +46,7 @@ Cypress.Commands.add('initEditorJS', (config: EditorConfig = {}): Cypress.Chaina
 Cypress.Commands.add('getEditor', ({ block }: { block?: number } = {}): Cypress.Chainable<JQuery> => {
   const editor = cy.get('[data-cy=editorjs]');
 
-  if (!block) {
+  if (block === undefined) {
     return editor;
   }
 
