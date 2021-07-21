@@ -267,7 +267,7 @@ describe('popover element', () => {
       .should('not.be.visible');
 
     cy.getEditor({ block: 0 })
-      .find('sup[data-tune=footnote]')
+      .find('sup[data-tune=footnotes]')
       .should('not.exist');
   });
 });

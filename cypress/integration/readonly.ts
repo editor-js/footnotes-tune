@@ -7,10 +7,10 @@ describe('Read-only mode', () => {
         blocks: [ {
           type: 'paragraph',
           data: {
-            text: "Some text<sup data-tune='footnote'>1</sup>",
+            text: "Some text<sup data-tune='footnotes'>1</sup>",
           },
           tunes: {
-            footnote: [
+            footnotes: [
               'This is a footnote text',
             ],
           },

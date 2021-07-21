@@ -26,9 +26,9 @@ const FootnotesTune = require('@editorjs/footnotes');
 ```
 
 ### Load from CDN
-Load the script from [jsDelivr](https://www.jsdelivr.com/package/npm/@editorjs/footnote) CDN and connect to your page.
+Load the script from [jsDelivr](https://www.jsdelivr.com/package/npm/@editorjs/footnotes) CDN and connect to your page.
 
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/footnote@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/footnotes@latest"></script>
 
 ### Build from source code
 1. Clone the repo
@@ -45,7 +45,7 @@ var editor = EditorJS({
   
   tools: {
     ...
-    footnote: {
+    footnotes: {
       class: FootnotesTune,
     }
   }
@@ -63,12 +63,12 @@ var editor = EditorJS({
   tools: {
     list: {
       class: ListTool,
-      tunes: ['footnote'], // note that stirng here should be the same as tools object key for Tune  
+      tunes: ['footnotes'], // note that stirng here should be the same as tools object key for Tune  
     },
     paragraph: {
-      tunes: ['footnote'], // note that stirng here should be the same as tools object key for Tune  
+      tunes: ['footnotes'], // note that stirng here should be the same as tools object key for Tune  
     },
-    footnote: {
+    footnotes: {
       class: FootnotesTune,
     }
   }
@@ -85,7 +85,7 @@ var editor = EditorJS({
   
   tools: {
     ...
-    footnote: {
+    footnotes: {
       class: FootnotesTune,
       config: {
         placeholder: 'Your placeholder for footnotes popover',
@@ -107,20 +107,20 @@ var editor = EditorJS({
 
 ## Output data
 
-This tune inserts `sup` elements to Block's content with `data-tune="footnote"` attribute so you can find them on render.
+This tune inserts `sup` elements to Block's content with `data-tune="footnotes"` attribute so you can find them on render.
 
-Also, on Block save you'll get `tunes` property inside saved data with `footnote` property (the same as the key in the initial configuration).
+Also, on Block save you'll get `tunes` property inside saved data with `footnotes` property (the same as the key in the initial configuration).
 
-`tune.footnote` property contains array of strings respectively to each sup element in Block's content
+`tune.footnotes` property contains array of strings respectively to each sup element in Block's content
 
 ```json
 {
   "type": "paragraph",
   "data": {
-    "text": "You text with a footnote<sup data-tune=\"footnote\">1</sup>. And another footnote<sup data-tune=\"footnote\">2</sup>"
+    "text": "You text with a footnote<sup data-tune=\"footnotes\">1</sup>. And another footnote<sup data-tune=\"footnotes\">2</sup>"
   },
   "tunes": {
-    "footnote": [
+    "footnotes": [
       "This is a text for the first footnote",
       "And text for the second one"
     ]

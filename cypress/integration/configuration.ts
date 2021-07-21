@@ -4,7 +4,7 @@ describe('Tune configuration', () => {
   it('should use placeholder provided by user', () => {
     cy.initEditorJS({
       tools: {
-        footnote: {
+        footnotes: {
           config: {
             placeholder: 'Some placeholder passed by user',
           },
@@ -27,7 +27,7 @@ describe('Tune configuration', () => {
   it('should use shortcut provided by user', () => {
     cy.initEditorJS({
       tools: {
-        footnote: {
+        footnotes: {
           config: {
             shortcut: 'CMD+SHIFT+P',
           },

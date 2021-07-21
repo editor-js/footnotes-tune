@@ -202,7 +202,7 @@ export default class Popover {
 
     const blockContent = this.wrapper.querySelector('.ce-block__content')!;
 
-    const contentRect = blockContent.getBoundingClientRect();
+    const contentStyles = window.getComputedStyle(blockContent);
     const wrapperRect = this.wrapper.getBoundingClientRect();
     const rect = node.getBoundingClientRect();
 
@@ -226,17 +226,26 @@ export default class Popover {
       return;
     }
 
-    let left = rect.left - leftMargin;
+    /**
+     * Left coordinate is calculated relatively to wrapper
+     */
+    let left = rect.left - wrapperRect.left - leftMargin;
 
-    const leftOverhang = contentRect.left - left;
-    const rightOverhang = (left + defaultWidth) - contentRect.right;
+    /**
+     * Same for overhanging for both right and left sides
+     */
+    const leftOverhang = parseFloat(contentStyles.marginLeft) - left;
+    const rightOverhang = (left + defaultWidth) - (wrapperRect.width - parseFloat(contentStyles.marginLeft));
 
     const maxOverhang = 35;
 
+    /**
+     * Trim overhanging to max value
+     */
     if (leftOverhang > maxOverhang) {
-      left = contentRect.left - maxOverhang;
+      left = left + leftOverhang - maxOverhang;
     } else if (rightOverhang > maxOverhang) {
-      left = contentRect.right + maxOverhang - defaultWidth;
+      left = left - rightOverhang + maxOverhang;
     }
 
     this.node.style.left = left + 'px';

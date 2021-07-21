@@ -9,7 +9,7 @@ export default class Note {
   /**
    * data-tune value
    */
-  public static dataAttribute = 'footnote';
+  public static dataAttribute = 'footnotes';
 
   /**
    * Note's content

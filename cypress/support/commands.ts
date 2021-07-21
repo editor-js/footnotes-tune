@@ -24,12 +24,12 @@ Cypress.Commands.add('initEditorJS', (config: EditorConfig = {}): Cypress.Chaina
 
           config.tools = {
             paragraph: {
-              tunes: [ 'footnote' ],
+              tunes: [ 'footnotes' ],
             },
             ...config.tools,
-            footnote: {
+            footnotes: {
               class: win.FootnotesTune,
-              ...config.tools.footnote,
+              ...config.tools.footnotes,
             },
           };
 

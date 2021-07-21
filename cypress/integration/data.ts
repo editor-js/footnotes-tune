@@ -30,7 +30,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.data.text).to.eq('Some text<sup data-tune="footnote">1</sup>');
+          expect(paragraph.data.text).to.eq('Some text<sup data-tune="footnotes">1</sup>');
         });
     });
 
@@ -56,8 +56,8 @@ describe('Data manipulations', () => {
           const paragraph = data.blocks[0];
 
           expect(paragraph).to.have.property('tunes');
-          expect(paragraph.tunes).to.have.property('footnote');
-          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popover' ]);
+          expect(paragraph.tunes).to.have.property('footnotes');
+          expect(paragraph.tunes!.footnotes).to.deep.eq([ 'This text is inside the popover' ]);
         });
     });
 
@@ -94,7 +94,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq(['This text is inside the first popover', 'This text is inside the second popover']);
+          expect(paragraph.tunes!.footnotes).to.deep.eq(['This text is inside the first popover', 'This text is inside the second popover']);
         });
     });
 
@@ -127,7 +127,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq([ '<b>This text is inside the popover</b>' ]);
+          expect(paragraph.tunes!.footnotes).to.deep.eq([ '<b>This text is inside the popover</b>' ]);
         });
     });
 
@@ -152,7 +152,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnote).to.deep.eq([ 'This text is inside the popover<br><br>' ]);
+          expect(paragraph.tunes!.footnotes).to.deep.eq([ 'This text is inside the popover<br><br>' ]);
         });
     });
   });
@@ -171,10 +171,10 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup data-tune="footnote">1</sup>',
+            text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnote: [
+            footnotes: [
               'This is a footnote',
             ],
           },
@@ -197,10 +197,10 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some<sup data-tune="footnote">1</sup> text<sup data-tune="footnote">2</sup>',
+            text: 'Some<sup data-tune="footnotes">1</sup> text<sup data-tune="footnotes">2</sup>',
           },
           tunes: {
-            footnote: [
+            footnotes: [
               'This is the first footnote',
               'This is the second footnote',
             ],
@@ -236,10 +236,10 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup data-tune="footnote">1</sup>',
+            text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnote: [
+            footnotes: [
               'This is a <b>footnote</b>',
             ],
           },
@@ -262,10 +262,10 @@ describe('Data manipulations', () => {
         {
           type: 'paragraph',
           data: {
-            text: 'Some text<sup data-tune="footnote">1</sup>',
+            text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnote: [
+            footnotes: [
               'This is a footnote<br>',
             ],
           },
