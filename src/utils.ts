@@ -21,6 +21,19 @@ export function throttled(delay: number, fn: (...args: unknown[]) => void): (...
 }
 
 /**
+ * Returns true if passed node is BR element
+ *
+ * @param node - node to check
+ */
+export function isBrTag(node: Node | null): node is HTMLBRElement {
+  if (!node) {
+    return false;
+  }
+
+  return node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === 'BR';
+}
+
+/**
  * Returns true if range is at the end of common ancestor container
  *
  * @param range - range to check
@@ -37,19 +50,6 @@ export function isRangeAtEnd(range: Range): boolean {
   }
 
   return false;
-}
-
-/**
- * Returns true if passed node is BR element
- *
- * @param node - node to check
- */
-export function isBrTag(node: Node | null): node is HTMLBRElement {
-  if (!node) {
-    return false;
-  }
-
-  return node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === 'BR';
 }
 
 /**

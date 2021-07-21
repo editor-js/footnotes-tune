@@ -19,6 +19,31 @@
     user-select: none;
 }
 
+/**
+ * Hack for fake cursor
+ */
+:global(.codex-editor__fake-cursor) {
+    display: inline-block;
+    height: 1.15em;
+    margin-bottom: -3px;
+    margin-right: -1px;
+
+    border-left: 1px solid black;
+
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+
 @keyframes sup-in {
     from {
         transform: translateY(-5px);
