@@ -3,7 +3,7 @@ import styles from './popover.pcss';
 import Note from './note';
 import { API } from '@editorjs/editorjs';
 import { FootnotesTuneConfig } from './index';
-import {isRangeAtEnd, setSelectionAtEnd, throttled} from './utils';
+import { isRangeAtEnd, setSelectionAtEnd, throttled } from './utils';
 
 /**
  *
@@ -174,7 +174,15 @@ export default class Popover {
     });
 
     applyButton.addEventListener('click', () => this.close());
-    removeButton.addEventListener('click', () => this.close(true));
+    removeButton.addEventListener('click', () => {
+      const shouldDelete = confirm(this.api.i18n.t('Are you sure you want to remove this note?'));
+
+      if (!shouldDelete) {
+        return;
+      }
+
+      this.close(true);
+    });
 
     buttonsWrapper.append(applyButton, shortcutHint, removeButton);
 

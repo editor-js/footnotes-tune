@@ -103,3 +103,4 @@ dist
 .idea/
 
 cypress/videos/
+cypress/screenshots/
