@@ -173,7 +173,7 @@ describe('popover element', () => {
       .click();
 
     cy.getEditor({ block: 0 })
-      .find(`.${styles['ej-fn-popover']}`)
+      .find(`.${styles['ej-fn-popover__textarea']}`)
       .should('contain.html', '<b>This text is inside the popover</b>');
   });
 

@@ -40,7 +40,7 @@ describe('Sup element', () => {
 
     cy.getEditor({ block: 0 })
       .find('.cdx-block[contenteditable]')
-      .type('{movetoend}{backspace}')
+      .type('{selectall}{backspace}')
       .find('sup')
       .should('not.exist');
   });
@@ -54,7 +54,7 @@ describe('Sup element', () => {
 
     cy.getEditor({ block: 0 })
       .find('.cdx-block[contenteditable]')
-      .type('{movetoend}{leftarrow}{del}')
+      .type('{selectall}{del}')
       .find('sup')
       .should('not.exist');
   });
