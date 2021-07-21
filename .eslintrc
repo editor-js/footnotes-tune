@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "codex/ts"
+  ],
+  "settings": {
+    "jsdoc": {
+      "mode": "typescript"
+    }
+  }
+}

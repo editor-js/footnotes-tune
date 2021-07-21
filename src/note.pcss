@@ -1,0 +1,52 @@
+.ej-fn-sup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 7px 0 5px;
+    padding: 3px 6px;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    cursor: pointer;
+
+    background: #FFFFFF;
+    border: 1px solid #1D202B;
+    box-shadow: 0 2px 0 0 rgba(29,32,43,0.15), 0 4px 12px -3px rgba(29,32,43,0.15);
+    border-radius: 5px;
+    animation: sup-in 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    will-change: transform, opacity;
+
+    user-select: none;
+}
+
+/**
+ * Hack for fake cursor
+ */
+:global(.codex-editor__fake-cursor) {
+    display: inline-block;
+    height: 1.15em;
+    margin-bottom: -3px;
+    margin-right: -1px;
+
+    border-left: 1px solid black;
+
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+
+@keyframes sup-in {
+    from {
+        transform: translateY(-5px);
+        opacity: 0;
+    }
+}

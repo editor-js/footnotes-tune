@@ -1,0 +1,44 @@
+.ej-fn-tune {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 2px 15px 2px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 100ms ease;
+    will-change: background-color;
+    user-select: none;
+
+    &:hover:not(&--disabled) {
+        background: #eff2f5;
+    }
+
+    &__icon {
+        display: flex;
+        width: 26px;
+        height: 26px;
+        align-items: center;
+        justify-content: center;
+        margin-right: 4px;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    &__label {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    &--disabled {
+        opacity: 0.7;
+        cursor: default;
+    }
+}
+
+.ej-fn-wrapper {
+    position: relative;
+}
+
