@@ -4,7 +4,7 @@ describe('Tune configuration', () => {
   /**
    * @todo understand why it doesn't work on CI
    */
-  xit('should use placeholder provided by user', () => {
+  it.skip('should use placeholder provided by user', () => {
     cy.initEditorJS({
       tools: {
         footnotes: {

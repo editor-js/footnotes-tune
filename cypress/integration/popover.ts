@@ -174,7 +174,8 @@ describe('popover element', () => {
 
     cy.getEditor({ block: 0 })
       .find(`.${styles['ej-fn-popover__textarea']}`)
-      .should('contain.html', '<b>This text is inside the popover</b>');
+      .invoke('html')
+      .should('match', /<b>This text is inside the popover(<br>)?<\/b>/);
   });
 
   it('should add br on enter', () => {

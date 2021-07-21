@@ -2,7 +2,7 @@ import popoverStyles from '../../src/popover.pcss';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 
 describe('Data manipulations', () => {
-  describe.only('saving', () => {
+  describe('saving', () => {
     beforeEach(() => {
       cy.initEditorJS().as('EditorJS');
     });
@@ -11,7 +11,7 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('.cdx-block[contenteditable]')
         .click()
-        .type('Some text{command}{shift}F');
+        .type('Some text{cmd}{shift}F');
 
       cy.getEditor({ block: 0 })
         .find(`.${popoverStyles['ej-fn-popover']}`)
@@ -62,7 +62,8 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('.cdx-block[contenteditable]')
         .click()
-        .type('Some {command}{shift}F');
+        .type('Some text')
+        .type('{leftarrow}{leftarrow}{command}{shift}F');
 
       cy.getEditor({ block: 0 })
         .find(`.${popoverStyles['ej-fn-popover']}`)
@@ -75,7 +76,7 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('.cdx-block[contenteditable]')
         .click()
-        .type('{movetoend} text{command}{shift}F');
+        .type('{movetoend}{command}{shift}F');
 
       cy.getEditor({ block: 0 })
         .find(`.${popoverStyles['ej-fn-popover']}`)
@@ -91,7 +92,8 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnotes).to.deep.eq(['This text is inside the first popover', 'This text is inside the second popover']);
+          expect(paragraph.tunes!.footnotes[0]).to.match( /This text is inside the first popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[1]).to.match(/This text is inside the second popover(<br>)?/);
         });
     });
 

@@ -32,6 +32,13 @@ describe('Sup element', () => {
   });
 
   it('should be removed by backspace', () => {
+    /**
+     * @todo Remove when https://bugzilla.mozilla.org/show_bug.cgi?id=1665167 is resolved
+     */
+    if (Cypress.browser.name === 'firefox') {
+      return;
+    }
+
     cy.getEditor({ block: 0 })
       .find('.cdx-block[contenteditable]')
       .type('Some text{command}{shift}F')
@@ -46,6 +53,13 @@ describe('Sup element', () => {
   });
 
   it('should be removed by delete key', () => {
+    /**
+     * @todo Remove when https://bugzilla.mozilla.org/show_bug.cgi?id=1665167 is resolved
+     */
+    if (Cypress.browser.name === 'firefox') {
+      return;
+    }
+
     cy.getEditor({ block: 0 })
       .find('.cdx-block[contenteditable]')
       .type('Some text{command}{shift}F')
