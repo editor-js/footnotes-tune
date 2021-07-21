@@ -3,6 +3,7 @@ import styles from './popover.pcss';
 import Note from './note';
 import { API } from '@editorjs/editorjs';
 import { FootnotesTuneConfig } from './index';
+import {isRangeAtEnd, setSelectionAtEnd, throttled} from './utils';
 
 /**
  *
@@ -79,7 +80,8 @@ export default class Popover {
     }, true);
 
     this.onClickOutside = this.onClickOutside.bind(this);
-    this.move = this.move.bind(this);
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    this.move = throttled(150, this.move.bind(this)).bind(this);
   }
 
   /**
@@ -109,14 +111,7 @@ export default class Popover {
     /**
      * Set cursor to the end of text
      */
-    const selection = window.getSelection();
-    const range = new Range();
-
-    range.selectNodeContents(this.textarea);
-    range.collapse();
-
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+    setSelectionAtEnd(this.textarea);
   }
 
   /**
@@ -281,10 +276,27 @@ export default class Popover {
     const selection = window.getSelection();
     const range = selection?.getRangeAt(0);
 
-    range?.insertNode(make('br'));
-    range?.collapse();
-    range?.insertNode(make('br'));
-    range?.collapse();
+    if (!range) {
+      return;
+    }
+
+    const isAtEnd = isRangeAtEnd(range);
+
+    console.log(isAtEnd);
+
+
+    range.insertNode(make('br'));
+    range.collapse();
+
+    if (isAtEnd) {
+      range.insertNode(make('br'));
+      range.collapse();
+    }
+
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    this.textarea.normalize();
   }
 
   /**
