@@ -5,6 +5,8 @@ Footnotes Block Tune for the [Editor.js](https://editorjs.io).
 
 ![](assets/example.gif)
 
+> ☝️ Because of [FireFox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1665167) Tune doesn't work well there.
+
 ## Installation
 
 ### Install via NPM or Yarn
