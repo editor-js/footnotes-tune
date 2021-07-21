@@ -290,9 +290,6 @@ export default class Popover {
 
     const isAtEnd = isRangeAtEnd(range);
 
-    console.log(isAtEnd);
-
-
     range.insertNode(make('br'));
     range.collapse();
 
