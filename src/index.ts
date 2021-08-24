@@ -3,14 +3,14 @@ import styles from  './index.pcss';
 import { API, BlockTune } from '@editorjs/editorjs';
 import { make } from './dom';
 import Popover from './popover';
-import Note from './note';
+import Note, {NoteData} from './note';
 import IconAddFootnote from './assets/add-footnote.svg';
 import Shortcut from '@codexteam/shortcuts';
 
 /**
  * Type of Footnotes Tune data
  */
-export type FootnotesData = string[];
+export type FootnotesData = NoteData[];
 
 /**
  * Tune user config
@@ -35,8 +35,14 @@ export default class FootnotesTune implements BlockTune {
   public static sanitize = {
     sup: {
       'data-tune': Note.dataAttribute,
+      'data-id': true,
     },
   };
+
+  /**
+   * Notes
+   */
+  private static notes: Note[] = [];
 
   /**
    * Tune's wrapper for tools' content
@@ -49,11 +55,6 @@ export default class FootnotesTune implements BlockTune {
   private popover: Popover;
 
   /**
-   * Notes for Tool
-   */
-  private notes: Note[] = [];
-
-  /**
    * We need to observe mutations to check if footnote removed
    */
   private observer = new MutationObserver(this.contentDidMutated.bind(this));
@@ -61,7 +62,7 @@ export default class FootnotesTune implements BlockTune {
   /**
    * Data passed on render
    */
-  private readonly data: string[] = [];
+  private readonly data: NoteData[] = [];
 
 
   /**
@@ -129,7 +130,9 @@ export default class FootnotesTune implements BlockTune {
    * Saves notes data
    */
   public save(): FootnotesData {
-    return this.notes.map(note => note.content);
+    const blockNotes = Array.from(this.wrapper.querySelectorAll(`sup[data-tune=${Note.dataAttribute}]`));
+
+    return FootnotesTune.notes.filter(note => blockNotes.includes(note.node)).map(note => note.save());
   }
 
   /**
@@ -199,15 +202,15 @@ export default class FootnotesTune implements BlockTune {
    * @param newNote - note to insert
    */
   private insertNote(newNote: Note): void {
-    let nextNoteIndex = this.notes.findIndex(note =>
+    let nextNoteIndex = FootnotesTune.notes.findIndex(note =>
       newNote.range.compareBoundaryPoints(Range.START_TO_START, note.range) === -1
     );
 
     if (nextNoteIndex === -1) {
-      nextNoteIndex = this.notes.length;
+      nextNoteIndex = FootnotesTune.notes.length;
     }
 
-    this.notes.splice(nextNoteIndex, 0, newNote);
+    FootnotesTune.notes.splice(nextNoteIndex, 0, newNote);
   }
 
   /**
@@ -225,7 +228,7 @@ export default class FootnotesTune implements BlockTune {
 
         const index = parseInt(node.textContent || '-1');
 
-        this.notes.splice(index - 1, 1);
+        FootnotesTune.notes.splice(index - 1, 1);
 
         return true;
       });
@@ -245,7 +248,7 @@ export default class FootnotesTune implements BlockTune {
    * Updates notes indices
    */
   private updateIndices(): void {
-    this.notes.forEach((note, i) => note.index = i + 1);
+    FootnotesTune.notes.forEach((note, i) => note.index = i + 1);
   }
 
   /**
@@ -257,12 +260,12 @@ export default class FootnotesTune implements BlockTune {
     const sups = content.querySelectorAll(`sup[data-tune=${Note.dataAttribute}]`);
 
     sups.forEach((sup, i) => {
-      const note = new Note(sup as HTMLElement, this.popover);
+      const note = new Note(sup as HTMLElement, this.popover, this.data[i].id);
 
       note.index = parseInt(sup.textContent || '0');
 
-      note.content = this.data[i];
-      this.notes.push(note);
+      note.content = this.data[i].content;
+      FootnotesTune.notes.push(note);
     });
   }
 }

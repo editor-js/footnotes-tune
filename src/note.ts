@@ -1,6 +1,13 @@
 import { make } from './dom';
 import styles from './note.pcss';
 import Popover from './popover';
+import { nanoid } from 'nanoid';
+
+export interface NoteData {
+  id: string;
+  content: string;
+  superscript: number;
+}
 
 /**
  * Note object
@@ -10,6 +17,11 @@ export default class Note {
    * data-tune value
    */
   public static dataAttribute = 'footnotes';
+
+  /**
+   * Note's id
+   */
+  public id: string;
 
   /**
    * Note's content
@@ -39,9 +51,12 @@ export default class Note {
   /**
    * @param rangeOrNode - range to insert sup or existing sup to hydrate
    * @param popover - editable popover
+   * @param id - Note's id if presented
    */
-  constructor(rangeOrNode: Range | HTMLElement, popover: Popover) {
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  constructor(rangeOrNode: Range | HTMLElement, popover: Popover, id = nanoid(6)) {
     this.popover = popover;
+    this.id = id;
 
     if (rangeOrNode instanceof Range) {
       this.range = rangeOrNode;
@@ -57,6 +72,7 @@ export default class Note {
     }
 
     this.node.dataset.tune = Note.dataAttribute;
+    this.node.dataset.id = this.id;
     this.node.addEventListener('click', () => {
       this.popover.open(this);
     });
@@ -83,5 +99,16 @@ export default class Note {
    */
   public remove(): void {
     this.node.remove();
+  }
+
+  /**
+   * Save's notes content
+   */
+  public save(): NoteData {
+    return {
+      id: this.id,
+      content: this.content,
+      superscript: this.index,
+    };
   }
 }
