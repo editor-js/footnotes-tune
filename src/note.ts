@@ -3,9 +3,23 @@ import styles from './note.pcss';
 import Popover from './popover';
 import { nanoid } from 'nanoid';
 
+/**
+ * Interface describes data footnote outputs
+ */
 export interface NoteData {
+  /**
+   * Note's id
+   */
   id: string;
+
+  /**
+   * Note's content
+   */
   content: string;
+
+  /**
+   * Note's superscript index
+   */
   superscript: number;
 }
 
