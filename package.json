@@ -1,6 +1,6 @@
 {
   "name": "@editorjs/footnotes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Footnotes Block Tune for Editor.js",
   "main": "dist/bundle.js",
   "types": "src/index.ts",
@@ -39,6 +39,7 @@
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
-    "@codexteam/shortcuts": "^1.1.1"
+    "@codexteam/shortcuts": "^1.1.1",
+    "nanoid": "^3.1.25"
   }
 }

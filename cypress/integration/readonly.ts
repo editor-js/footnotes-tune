@@ -10,9 +10,11 @@ describe('Read-only mode', () => {
             text: "Some text<sup data-tune='footnotes'>1</sup>",
           },
           tunes: {
-            footnotes: [
-              'This is a footnote text',
-            ],
+            footnotes: [ {
+              content: 'This is a footnote text',
+              superscript: 1,
+              id: 'N6iKKL',
+            } ],
           },
         } ],
       },

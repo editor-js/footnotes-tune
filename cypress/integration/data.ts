@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import popoverStyles from '../../src/popover.pcss';
 import EditorJS, { OutputData } from '@editorjs/editorjs';
 
 describe('Data manipulations', () => {
-  describe('saving', () => {
+  describe('Saving', () => {
     beforeEach(() => {
       cy.initEditorJS().as('EditorJS');
     });
@@ -27,7 +28,31 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.data.text).to.match(/Some text<sup data-tune="footnotes">1<\/sup>(<br>)?/);
+          expect(paragraph.data.text).to.match(/Some text<sup data-tune="footnotes" data-id="[_a-zA-Z0-9\\-]{6}">1<\/sup>(<br>)?/);
+        });
+    });
+
+    it('should save sup element for block content with id equals to id in tunes section', () => {
+      cy.getEditor({ block: 0 })
+        .find('.cdx-block[contenteditable]')
+        .click()
+        .type('Some text{cmd}{shift}F');
+
+      cy.getEditor({ block: 0 })
+        .find(`.${popoverStyles['ej-fn-popover']}`)
+        /**
+         * For some reason cypress inserts F from shortcut to a popover
+         */
+        .type('{selectall}{backspace}')
+        .type('This text is inside the popover{cmd}{ctrl}{enter}');
+
+      cy.get<EditorJS>('@EditorJS')
+        .then(async (editor) => {
+          const data = await editor.save();
+
+          const paragraph = data.blocks[0];
+
+          expect(paragraph.data.text).to.match(new RegExp(`Some text<sup data-tune="footnotes" data-id="${paragraph.tunes!.footnotes[0].id}">1<\/sup>(<br>)?`));
         });
     });
 
@@ -54,7 +79,11 @@ describe('Data manipulations', () => {
 
           expect(paragraph).to.have.property('tunes');
           expect(paragraph.tunes).to.have.property('footnotes');
-          expect(paragraph.tunes!.footnotes[0]).to.match(/This text is inside the popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[0]).to.have.property('id');
+          expect(paragraph.tunes!.footnotes[0]).to.have.property('content');
+          expect(paragraph.tunes!.footnotes[0]).to.have.property('superscript');
+          expect(paragraph.tunes!.footnotes[0].content).to.match(/This text is inside the popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[0].superscript).to.eq(1);
         });
     });
 
@@ -92,8 +121,57 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnotes[0]).to.match( /This text is inside the first popover(<br>)?/);
-          expect(paragraph.tunes!.footnotes[1]).to.match(/This text is inside the second popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[0].content).to.match(/This text is inside the first popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[0].superscript).to.eq(1);
+          expect(paragraph.tunes!.footnotes[1].content).to.match(/This text is inside the second popover(<br>)?/);
+          expect(paragraph.tunes!.footnotes[1].superscript).to.eq(2);
+        });
+    });
+
+    it('should save footnotes from different blocks', () => {
+      cy.getEditor({ block: 0 })
+        .find('.cdx-block[contenteditable]')
+        .click()
+        .type('First block')
+        .type('{command}{shift}F');
+
+      cy.getEditor({ block: 0 })
+        .find(`.${popoverStyles['ej-fn-popover']}`)
+        /**
+         * For some reason cypress inserts F from shortcut to a popover
+         */
+        .type('{selectall}{backspace}')
+        .type('This text is inside the first popover{cmd}{ctrl}{enter}');
+
+      cy.getEditor({ block: 0 })
+        .find('.cdx-block[contenteditable]')
+        .click()
+        .type('{movetoend}{enter}');
+
+      cy.getEditor({ block: 1 })
+        .find('.cdx-block[contenteditable]')
+        .click()
+        .type('Second block')
+        .type('{command}{shift}F');
+
+      cy.getEditor({ block: 1 })
+        .find(`.${popoverStyles['ej-fn-popover']}`)
+        /**
+         * For some reason cypress inserts F from shortcut to a popover
+         */
+        .type('{selectall}{backspace}This text is inside the second popover{cmd}{ctrl}{enter}');
+
+      cy.get<EditorJS>('@EditorJS')
+        .then(async (editor) => {
+          const data = await editor.save();
+
+          const paragraph1 = data.blocks[0];
+          const paragraph2 = data.blocks[1];
+
+          expect(paragraph1.tunes!.footnotes[0].content).to.match(/This text is inside the first popover(<br>)?/);
+          expect(paragraph1.tunes!.footnotes[0].superscript).to.eq(1);
+          expect(paragraph2.tunes!.footnotes[0].content).to.match(/This text is inside the second popover(<br>)?/);
+          expect(paragraph2.tunes!.footnotes[0].superscript).to.eq(2);
         });
     });
 
@@ -128,7 +206,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnotes[0]).to.match(/<b>This text is inside the popover(<br>)?<\/b>/);
+          expect(paragraph.tunes!.footnotes[0].content).to.match(/<b>This text is inside the popover(<br>)?<\/b>/);
         });
     });
 
@@ -153,7 +231,7 @@ describe('Data manipulations', () => {
 
           const paragraph = data.blocks[0];
 
-          expect(paragraph.tunes!.footnotes).to.deep.eq([ 'This text is inside the popover<br><br>' ]);
+          expect(paragraph.tunes!.footnotes[0].content).to.eq('This text is inside the popover<br><br>');
         });
     });
   });
@@ -175,9 +253,11 @@ describe('Data manipulations', () => {
             text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnotes: [
-              'This is a footnote',
-            ],
+            footnotes: [ {
+              content: 'This is a footnote',
+              superscript: 1,
+              id: 'N6iKKL',
+            } ],
           },
         },
       ]);
@@ -185,6 +265,7 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('sup')
         .should('contain', '1')
+        .should('have.attr', 'data-id', 'N6iKKL')
         .click();
 
       cy.getEditor({ block: 0 })
@@ -202,8 +283,12 @@ describe('Data manipulations', () => {
           },
           tunes: {
             footnotes: [
-              'This is the first footnote',
-              'This is the second footnote',
+              { content: 'This is the first footnote',
+                id: 'N6iKKL',
+                superscript: 1 },
+              { content: 'This is the second footnote',
+                id: 'N6iKKM',
+                superscript: 2 },
             ],
           },
         },
@@ -213,6 +298,7 @@ describe('Data manipulations', () => {
         .find('sup')
         .first()
         .should('contain', '1')
+        .should('have.attr', 'data-id', 'N6iKKL')
         .click();
 
       cy.getEditor({ block: 0 })
@@ -224,6 +310,7 @@ describe('Data manipulations', () => {
         .find('sup')
         .last()
         .should('contain', '2')
+        .should('have.attr', 'data-id', 'N6iKKM')
         .click();
 
       cy.getEditor({ block: 0 })
@@ -240,9 +327,11 @@ describe('Data manipulations', () => {
             text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnotes: [
-              'This is a <b>footnote</b>',
-            ],
+            footnotes: [ {
+              content: 'This is a <b>footnote</b>',
+              id: 'N6iKKL',
+              superscript: 1,
+            } ],
           },
         },
       ]);
@@ -250,6 +339,7 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('sup')
         .should('contain', '1')
+        .should('have.attr', 'data-id', 'N6iKKL')
         .click();
 
       cy.getEditor({ block: 0 })
@@ -266,9 +356,11 @@ describe('Data manipulations', () => {
             text: 'Some text<sup data-tune="footnotes">1</sup>',
           },
           tunes: {
-            footnotes: [
-              'This is a footnote<br>',
-            ],
+            footnotes: [{
+              content: 'This is a footnote<br>',
+              id: 'N6iKKL',
+              superscript: 1
+            }],
           },
         },
       ]);
@@ -276,6 +368,7 @@ describe('Data manipulations', () => {
       cy.getEditor({ block: 0 })
         .find('sup')
         .should('contain', '1')
+        .should('have.attr', 'data-id', 'N6iKKL')
         .click();
 
       cy.getEditor({ block: 0 })
